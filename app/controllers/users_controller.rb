@@ -8,10 +8,11 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(params[:user])
+    @user = User.new params[:user]
     
     if @user.save
-      redirect_to root_path
+      flash[:success] = "Welcome, your account hsa been created!"
+      redirect_to @user
     else
       render 'new'
     end
