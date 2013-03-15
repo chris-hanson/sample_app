@@ -9,7 +9,6 @@ describe "UserPages" do
 
     it { should have_selector('h1', text: 'Sign up') }
     it { should have_button('Create my account') }
-    
   end
 
   describe "profile page" do
@@ -58,8 +57,9 @@ describe "UserPages" do
         
         it { should have_selector('h1', text: user.name) }
         it { should have_selector(".alert-success", text: 'Welcome') }
+        it { should have_link('Sign out') }
+        it { should_not have_link('Sign in') }
       end
     end
-    
   end
 end
