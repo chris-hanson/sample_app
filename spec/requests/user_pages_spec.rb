@@ -35,6 +35,7 @@ describe "UserPages" do
         let(:admin) { FactoryGirl.create(:admin) }
 
         before do
+          click_link('Sign out')
           sign_in admin
           visit users_path
         end
@@ -59,11 +60,19 @@ describe "UserPages" do
   end
 
   describe "profile page" do
-
     let(:user) { FactoryGirl.create(:user) }
+    let!(:post1) { FactoryGirl.create(:micropost, user: user) }
+    let!(:post2) { FactoryGirl.create(:micropost, user: user, content: 'Foo') }
+
     before { visit user_path(user) }
 
     it { should have_selector('h1', text: user.name) }
+
+    describe "microposts" do
+      it { should have_content(post1.content) }
+      it { should have_content(post2.content) }
+      it { should have_content("Microposts (#{user.microposts.count})") }
+    end
   end
 
   describe "sinup" do

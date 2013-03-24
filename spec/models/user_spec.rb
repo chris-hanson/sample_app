@@ -16,6 +16,7 @@ describe User do
   it { should respond_to :remember_token }
   it { should respond_to :authenticate }
   it { should respond_to :admin }
+  it { should respond_to :microposts }
 
   it { should be_valid }
   it { should_not be_admin }
@@ -107,6 +108,30 @@ describe User do
     describe "remember token" do
       before { @user.save }
       its(:remember_token) { should_not be_blank }
+    end
+
+    describe "micropost association" do
+      before { @user.save }
+
+      let!(:older_post) do
+        FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
+      end
+
+      let!(:newer_post) do
+        FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago)
+      end
+
+      it "should have the right microposts in the right order" do
+        @user.microposts.should == [newer_post, older_post]
+      end
+      
+      it "should destroy associated microposts" do
+        microposts = @user.microposts
+        @user.destroy
+        microposts.each do |micropost|
+          Micropost.find_by_id(micropost.id).should be_nil
+        end
+      end
     end
   end
 end
